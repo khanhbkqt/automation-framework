@@ -1,0 +1,23 @@
+# Automation Framework
+
+This is a UI automation testing framework using Selenium, TestNG, and Cucumber.
+
+## Prerequisites
+
+- Java 8+
+- Maven 3.6+
+- ChromeDriver (or any WebDriver binary)
+
+## Setup
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/khanhbkqt/automation-framework.git
+   cd automation-framework
+
+2. **Install Dependencies**:
+    mvn clean install
+
+3. **Running Tests**:
+    Run tests using Maven:
+    mvn test

@@ -1,19 +1,22 @@
 package pages;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 import lazy.Lazy;
-import lazy.LazyWebElement;
 
 public class LoginPage extends PageObject {
 
-    @Lazy(name = "username")
-    LazyWebElement usernameField;
+    @Lazy
+    @FindBy(name = "username")
+    WebElement usernameField;
     
-    @Lazy(name = "password")
-    LazyWebElement passwordField;
+    @Lazy
+    @FindBy(name = "password")
+    WebElement passwordField;
 
-    @Lazy(xpath = "//input[@type='submit' and @value='login']")
-    LazyWebElement loginButton;
+    @FindBy(xpath = "//input[@type='submit' and @value='login']")
+    WebElement loginButton;
 
     public LoginPage(WebDriver driver) {
         super(driver);

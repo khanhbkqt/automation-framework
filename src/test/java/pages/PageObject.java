@@ -1,5 +1,10 @@
 package pages;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+import config.LocatorUtil;
 
 import lazy.Lazy;
 import lazy.LazyWebElement;
@@ -17,11 +22,18 @@ public abstract class PageObject {
     private void initializeLazyWebElements() {
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
+                if (!field.isAnnotationPresent(FindBy.class)) continue;
+
+                FindBy annotation = field.getAnnotation(FindBy.class);
+
                 if (field.isAnnotationPresent(Lazy.class)) {
                     field.setAccessible(true);
-                    Lazy annotation = field.getAnnotation(Lazy.class);
-                    LazyWebElement lazyWebElement = new LazyWebElement(driver, annotation);
+                    WebElement lazyWebElement = new LazyWebElement(driver, annotation);
                     field.set(this, lazyWebElement);
+                } else {
+                    By by = LocatorUtil.getByFromAnnotation(annotation);
+                    WebElement element = driver.findElement(by);
+                    field.set(this, element);
                 }
             }
         } catch (IllegalAccessException e) {

@@ -1,16 +1,18 @@
 package pages;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 import lazy.Lazy;
-import lazy.LazyWebElement;
 
 public class HomePage extends PageObject {
 
     private WebDriver driver;
 
-    @Lazy(xpath = "//h1[contains(text(),'Example')]")
-    private LazyWebElement welcomeMessage;
+    @Lazy
+    @FindBy(xpath = "//h1[contains(text(),'Example')]")
+    private WebElement welcomeMessage;
 
     public HomePage(WebDriver driver) {
         super(driver);

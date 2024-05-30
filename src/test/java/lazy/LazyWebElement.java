@@ -1,37 +1,47 @@
 package lazy;
-import java.time.Duration;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.FindBy;
 
 public class LazyWebElement implements WebElement {
     private final WebDriver driver;
-    private final Lazy annotation;
+    private final FindBy locator;
     private WebElement element;
 
-    public LazyWebElement(WebDriver driver, Lazy annotation) {
+    public LazyWebElement(WebDriver driver, FindBy locator) {
         this.driver = driver;
-        this.annotation = annotation;
+        this.locator = locator;
     }
 
     private void initialize() {
         if (element == null) {
-            By locator = getByFromAnnotation(annotation);
-            int timeout = annotation.timeout();
+            element = driver.findElement(getByFromAnnotation(locator));
+        }
+    }
 
-            if (timeout == 0) {
-                element = driver.findElement(locator);
-            } else {
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
-                element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-            }
-            
+    private By getByFromAnnotation(FindBy locator) {
+        if (!locator.className().isEmpty()) {
+            return By.className(locator.className());
+        } else if (!locator.css().isEmpty()) {
+            return By.cssSelector(locator.css());
+        } else if (!locator.id().isEmpty()) {
+            return By.id(locator.id());
+        } else if (!locator.linkText().isEmpty()) {
+            return By.linkText(locator.linkText());
+        } else if (!locator.name().isEmpty()) {
+            return By.name(locator.name());
+        } else if (!locator.partialLinkText().isEmpty()) {
+            return By.partialLinkText(locator.partialLinkText());
+        } else if (!locator.tagName().isEmpty()) {
+            return By.tagName(locator.tagName());
+        } else if (!locator.xpath().isEmpty()) {
+            return By.xpath(locator.xpath());
+        } else {
+            throw new IllegalArgumentException("No valid locator found in @FindBy annotation");
         }
     }
 
@@ -40,34 +50,6 @@ public class LazyWebElement implements WebElement {
             initialize();
         }
         return element;
-    }
-
-    private By getByFromAnnotation(Lazy annotation) {
-        if (!annotation.id().isEmpty()) {
-            return By.id(annotation.id());
-        }
-        if (!annotation.xpath().isEmpty()) {
-            return By.xpath(annotation.xpath());
-        }
-        if (!annotation.css().isEmpty()) {
-            return By.cssSelector(annotation.css());
-        }
-        if (!annotation.name().isEmpty()) {
-            return By.name(annotation.name());
-        }
-        if (!annotation.className().isEmpty()) {
-            return By.className(annotation.className());
-        }
-        if (!annotation.tagName().isEmpty()) {
-            return By.tagName(annotation.tagName());
-        }
-        if (!annotation.linkText().isEmpty()) {
-            return By.linkText(annotation.linkText());
-        }
-        if (!annotation.partialLinkText().isEmpty()) {
-            return By.partialLinkText(annotation.partialLinkText());
-        }
-        throw new IllegalArgumentException("Locator not specified in LazyWebElement annotation");
     }
 
     @Override

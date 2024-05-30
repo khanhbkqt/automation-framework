@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
+import config.LocatorUtil;
+
 public class LazyWebElement implements WebElement {
     private final WebDriver driver;
     private final FindBy locator;
@@ -19,29 +21,7 @@ public class LazyWebElement implements WebElement {
 
     private void initialize() {
         if (element == null) {
-            element = driver.findElement(getByFromAnnotation(locator));
-        }
-    }
-
-    private By getByFromAnnotation(FindBy locator) {
-        if (!locator.className().isEmpty()) {
-            return By.className(locator.className());
-        } else if (!locator.css().isEmpty()) {
-            return By.cssSelector(locator.css());
-        } else if (!locator.id().isEmpty()) {
-            return By.id(locator.id());
-        } else if (!locator.linkText().isEmpty()) {
-            return By.linkText(locator.linkText());
-        } else if (!locator.name().isEmpty()) {
-            return By.name(locator.name());
-        } else if (!locator.partialLinkText().isEmpty()) {
-            return By.partialLinkText(locator.partialLinkText());
-        } else if (!locator.tagName().isEmpty()) {
-            return By.tagName(locator.tagName());
-        } else if (!locator.xpath().isEmpty()) {
-            return By.xpath(locator.xpath());
-        } else {
-            throw new IllegalArgumentException("No valid locator found in @FindBy annotation");
+            element = driver.findElement(LocatorUtil.getByFromAnnotation(locator));
         }
     }
 
